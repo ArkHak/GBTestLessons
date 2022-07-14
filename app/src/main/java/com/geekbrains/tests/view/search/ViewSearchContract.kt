@@ -3,10 +3,10 @@ package com.geekbrains.tests.view.search
 import com.geekbrains.tests.model.SearchResult
 import com.geekbrains.tests.view.ViewContract
 
-internal interface ViewSearchContract : ViewContract {
+interface ViewSearchContract : ViewContract {
     fun displaySearchResults(
         searchResults: List<SearchResult>,
-        totalCount: Int
+        totalCount: Int,
     )
 
     fun displayError()

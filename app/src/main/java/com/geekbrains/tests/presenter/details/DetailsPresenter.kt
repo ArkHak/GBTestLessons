@@ -29,4 +29,8 @@ internal class DetailsPresenter internal constructor(
     override fun onDetach() {
         viewContract = null
     }
+
+    fun checkCount(): Int {
+        return this.count
+    }
 }

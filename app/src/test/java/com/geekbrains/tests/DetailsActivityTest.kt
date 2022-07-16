@@ -38,6 +38,14 @@ class DetailsActivityTest {
         }
     }
 
+
+    @Test
+    fun activity_PresenterTest() {
+        scenario.onActivity {
+            assertNotNull(it)
+        }
+    }
+
     @Test
     fun activity_IsResumed() {
         assertEquals(Lifecycle.State.RESUMED, scenario.state)

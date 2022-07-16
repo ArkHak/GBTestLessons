@@ -31,6 +31,7 @@ class SearchPresenterTest {
         MockitoAnnotations.initMocks(this)
         //Создаем Презентер, используя моки Репозитория и Вью, проинициализированные строкой выше
         presenter = SearchPresenter(viewContract, repository)
+        presenter.onAttach(viewContract)
     }
 
     @Test //Проверим вызов метода searchGitHub() у нашего Репозитория
@@ -148,5 +149,29 @@ class SearchPresenterTest {
 
         //Убеждаемся, что ответ от сервера обрабатывается корректно
         verify(viewContract, times(1)).displaySearchResults(searchResults, 101)
+    }
+
+    @Test
+    fun onDetach_Test() {
+        presenter.onDetach()
+
+        presenter.handleGitHubError()
+        //Проверяем, что у viewContract НЕ вызывается метод displayError()
+        verify(viewContract, times(0)).displayError()
+    }
+
+    @Test
+    fun onAttach_Test() {
+        val targetPresenter = spy(mock(SearchPresenter::class.java))
+        targetPresenter.onAttach(viewContract)
+        targetPresenter.handleGitHubError()
+        verify(viewContract, times(1)).displayError()
+    }
+
+    @Test
+    fun notOnAttach_Test() {
+        val targetPresenter = spy(mock(SearchPresenter::class.java))
+        targetPresenter.handleGitHubError()
+        verify(viewContract, times(0)).displayError()
     }
 }

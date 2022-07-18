@@ -26,6 +26,7 @@ class MainActivity : AppCompatActivity(), ViewSearchContract {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        presenter.onAttach(this)
         setUI()
     }
 
@@ -75,7 +76,7 @@ class MainActivity : AppCompatActivity(), ViewSearchContract {
 
     override fun displaySearchResults(
         searchResults: List<SearchResult>,
-        totalCount: Int
+        totalCount: Int,
     ) {
         this.totalCount = totalCount
         adapter.updateResults(searchResults)
@@ -95,6 +96,11 @@ class MainActivity : AppCompatActivity(), ViewSearchContract {
         } else {
             progressBar.visibility = View.GONE
         }
+    }
+
+    override fun onDestroy() {
+        presenter.onDetach()
+        super.onDestroy()
     }
 
     companion object {

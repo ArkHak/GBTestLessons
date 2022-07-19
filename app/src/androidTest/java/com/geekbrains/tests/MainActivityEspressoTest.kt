@@ -1,6 +1,7 @@
 package com.geekbrains.tests
 
 import android.view.View
+import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.UiController
@@ -10,6 +11,7 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.geekbrains.tests.view.search.MainActivity
+import junit.framework.TestCase
 import org.hamcrest.Matcher
 import org.junit.After
 import org.junit.Before
@@ -27,13 +29,50 @@ class MainActivityEspressoTest {
     }
 
     @Test
+    fun activity_AssertNotNull() {
+        scenario.onActivity {
+            TestCase.assertNotNull(it)
+        }
+    }
+
+    @Test
+    fun activity_IsResumed() {
+        TestCase.assertEquals(Lifecycle.State.RESUMED, scenario.state)
+    }
+
+    @Test
+    fun searchEditText_IsDisplayed() {
+        onView(withId(R.id.searchEditText)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun toDetailsActivityButton_IsDisplayed() {
+        onView(withId(R.id.toDetailsActivityButton)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun toDetailsActivityButton_isClickable() {
+        onView(withId(R.id.toDetailsActivityButton)).check(matches(isClickable()))
+    }
+
+    @Test
+    fun activitySearch_IsDisplayed() {
+        onView(withId(R.id.searchEditText)).perform(click())
+        onView(withId(R.id.searchEditText)).perform(replaceText("algol"), closeSoftKeyboard())
+        onView(withId(R.id.searchEditText)).perform(pressImeActionButton())
+
+        onView(isRoot()).perform(delay())
+        onView(withId(R.id.totalCountTextView)).check(matches(isDisplayed()))
+    }
+
+    @Test
     fun activitySearch_IsWorking() {
         onView(withId(R.id.searchEditText)).perform(click())
         onView(withId(R.id.searchEditText)).perform(replaceText("algol"), closeSoftKeyboard())
         onView(withId(R.id.searchEditText)).perform(pressImeActionButton())
 
         onView(isRoot()).perform(delay())
-        onView(withId(R.id.totalCountTextView)).check(matches(withText("Number of results: 3148")))
+        onView(withId(R.id.totalCountTextView)).check(matches(withText("Number of results: 3149")))
     }
 
     private fun delay(): ViewAction {

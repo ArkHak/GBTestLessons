@@ -54,7 +54,7 @@ class BehaviorTest {
                 TIMEOUT
             )
 
-        Assert.assertEquals("Number of results: 494138", changedText.text.toString())
+        Assert.assertEquals("Number of results: 494139", changedText.text.toString())
     }
 
     @Test
@@ -104,8 +104,56 @@ class BehaviorTest {
         Assert.assertEquals(countSearchText, totalCountDetails.text)
     }
 
+    @Test
+    fun test_DetailsIncrement() {
+        val toDetails: UiObject2 = uiDevice.findObject(
+            By.res(
+                packageName,
+                "toDetailsActivityButton"
+            )
+        )
+        toDetails.click()
+
+        val incrementButton = uiDevice.wait(
+            Until.findObject(By.res(packageName, "incrementButton")),
+            TIMEOUT
+        )
+        incrementButton.click()
+
+        val countText =
+            uiDevice.wait(
+                Until.findObject(By.res(packageName, "totalCountTextViewDetails")),
+                TIMEOUT
+            )
+        Assert.assertEquals(countText.text, "Number of results: 1")
+    }
+
+    @Test
+    fun test_DetailsDecrement() {
+        val toDetails: UiObject2 = uiDevice.findObject(
+            By.res(
+                packageName,
+                "toDetailsActivityButton"
+            )
+        )
+        toDetails.click()
+
+        val decrementButton = uiDevice.wait(
+            Until.findObject(By.res(packageName, "decrementButton")),
+            TIMEOUT
+        )
+        decrementButton.click()
+
+        val countText =
+            uiDevice.wait(
+                Until.findObject(By.res(packageName, "totalCountTextViewDetails")),
+                TIMEOUT
+            )
+        Assert.assertEquals(countText.text, "Number of results: -1")
+    }
+
 
     companion object {
-        private const val TIMEOUT = 5000L
+        private const val TIMEOUT = 2000L
     }
 }

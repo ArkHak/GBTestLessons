@@ -8,6 +8,7 @@ import androidx.test.filters.SdkSuppress
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.uiautomator.By
 import androidx.test.uiautomator.UiDevice
+import androidx.test.uiautomator.UiObject2
 import androidx.test.uiautomator.Until
 import org.junit.Assert
 import org.junit.Before
@@ -53,7 +54,7 @@ class BehaviorTest {
                 TIMEOUT
             )
 
-        Assert.assertEquals("Number of results: 494093", changedText.text.toString())
+        Assert.assertEquals("Number of results: 494138", changedText.text.toString())
     }
 
     @Test
@@ -64,10 +65,43 @@ class BehaviorTest {
         }
         val changedText =
             uiDevice.wait(
-                Until.findObject(By.res(packageName, "totalCountTextView")),
+                Until.findObject(By.res(packageName, "totalCountTextViewDetails")),
                 TIMEOUT
             )
         Assert.assertEquals(changedText.text, "Number of results: 0")
+    }
+
+    @Test
+    fun test_OpenDetailsScreen_CorrectCount() {
+        val editText = uiDevice.findObject(By.res(packageName, "searchEditText"))
+        editText.text = "UiAutomator"
+
+        val searchButton: UiObject2 = uiDevice.findObject(
+            By.res(packageName, "searchButton")
+        )
+        searchButton.click()
+
+        val countSearch =
+            uiDevice.wait(
+                Until.findObject(By.res(packageName, "totalCountTextView")),
+                TIMEOUT
+            )
+        val countSearchText: String = countSearch.text
+
+        val toDetails: UiObject2 = uiDevice.findObject(
+            By.res(
+                packageName,
+                "toDetailsActivityButton"
+            )
+        )
+        toDetails.click()
+
+        val totalCountDetails =
+            uiDevice.wait(
+                Until.findObject(By.res(packageName, "totalCountTextViewDetails")),
+                TIMEOUT
+            )
+        Assert.assertEquals(countSearchText, totalCountDetails.text)
     }
 
 

@@ -3,16 +3,12 @@ package com.geekbrains.tests.automator
 import android.content.Context
 import android.content.Intent
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso
-import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SdkSuppress
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.uiautomator.By
 import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.Until
-import com.geekbrains.tests.R
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
@@ -46,8 +42,10 @@ class BehaviorTest {
         uiDevice.findObject(By.res(packageName, "searchEditText")).apply {
             text = "UiAutomator"
         }
-        Espresso.onView(ViewMatchers.withId(R.id.searchEditText))
-            .perform(ViewActions.pressImeActionButton())
+
+        uiDevice.findObject(By.res(packageName, "searchButton")).apply {
+            click()
+        }
 
         val changedText =
             uiDevice.wait(
@@ -55,7 +53,7 @@ class BehaviorTest {
                 TIMEOUT
             )
 
-        Assert.assertEquals("Number of results: 712", changedText.text.toString())
+        Assert.assertEquals("Number of results: 494093", changedText.text.toString())
     }
 
     @Test

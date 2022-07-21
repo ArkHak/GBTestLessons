@@ -38,8 +38,15 @@ class MainActivity : AppCompatActivity(), ViewSearchContract {
         toDetailsActivityButton.setOnClickListener {
             startActivity(DetailsActivity.getIntent(this, totalCount))
         }
+        setSearchButtonListener()
         setQueryListener()
         setRecyclerView()
+    }
+
+    private fun setSearchButtonListener() {
+        searchButton.setOnClickListener {
+            presenter.searchGitHub(searchButton.text.toString())
+        }
     }
 
     private fun setRecyclerView() {

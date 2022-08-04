@@ -1,5 +1,8 @@
 package com.geekbrains.tests.automator
 
+import TEST_NUMBER_OF_RESULTS_MINUS_1
+import TEST_NUMBER_OF_RESULTS_PLUS_1
+import TEST_NUMBER_OF_RESULTS_ZERO
 import android.content.Context
 import android.content.Intent
 import androidx.test.core.app.ApplicationProvider
@@ -54,7 +57,7 @@ class BehaviorTest {
                 TIMEOUT
             )
 
-        Assert.assertEquals("Number of results: 494139", changedText.text.toString())
+        Assert.assertEquals("TEST_NUMBER_OF_RESULTS 494139", changedText.text.toString())
     }
 
     @Test
@@ -68,7 +71,7 @@ class BehaviorTest {
                 Until.findObject(By.res(packageName, "totalCountTextViewDetails")),
                 TIMEOUT
             )
-        Assert.assertEquals(changedText.text, "Number of results: 0")
+        Assert.assertEquals(changedText.text, TEST_NUMBER_OF_RESULTS_ZERO)
     }
 
     @Test
@@ -125,7 +128,7 @@ class BehaviorTest {
                 Until.findObject(By.res(packageName, "totalCountTextViewDetails")),
                 TIMEOUT
             )
-        Assert.assertEquals(countText.text, "Number of results: 1")
+        Assert.assertEquals(countText.text, TEST_NUMBER_OF_RESULTS_PLUS_1)
     }
 
     @Test
@@ -149,7 +152,7 @@ class BehaviorTest {
                 Until.findObject(By.res(packageName, "totalCountTextViewDetails")),
                 TIMEOUT
             )
-        Assert.assertEquals(countText.text, "Number of results: -1")
+        Assert.assertEquals(countText.text, TEST_NUMBER_OF_RESULTS_MINUS_1)
     }
 
 

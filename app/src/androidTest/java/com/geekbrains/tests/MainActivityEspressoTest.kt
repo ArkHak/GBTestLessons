@@ -1,5 +1,7 @@
 package com.geekbrains.tests
 
+import TEST_FAKE_SEARCH
+import TEST_NUMBER_OF_RESULTS
 import android.view.View
 import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ActivityScenario
@@ -58,7 +60,8 @@ class MainActivityEspressoTest {
     @Test
     fun activitySearch_IsDisplayed() {
         onView(withId(R.id.searchEditText)).perform(click())
-        onView(withId(R.id.searchEditText)).perform(replaceText("algol"), closeSoftKeyboard())
+        onView(withId(R.id.searchEditText)).perform(replaceText(TEST_FAKE_SEARCH),
+            closeSoftKeyboard())
         onView(withId(R.id.searchEditText)).perform(pressImeActionButton())
 
         onView(isRoot()).perform(delay())
@@ -68,11 +71,12 @@ class MainActivityEspressoTest {
     @Test
     fun activitySearch_IsWorking() {
         onView(withId(R.id.searchEditText)).perform(click())
-        onView(withId(R.id.searchEditText)).perform(replaceText("algol"), closeSoftKeyboard())
+        onView(withId(R.id.searchEditText)).perform(replaceText(TEST_FAKE_SEARCH),
+            closeSoftKeyboard())
         onView(withId(R.id.searchEditText)).perform(pressImeActionButton())
 
         onView(isRoot()).perform(delay())
-        onView(withId(R.id.totalCountTextView)).check(matches(withText("Number of results: 3149")))
+        onView(withId(R.id.totalCountTextView)).check(matches(withText("$TEST_NUMBER_OF_RESULTS 3181")))
     }
 
     private fun delay(): ViewAction {

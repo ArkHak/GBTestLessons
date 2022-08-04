@@ -51,6 +51,12 @@ android {
             buildConfigField "String", "TYPE", '"REAL"'
         }
     }
+
+    sourceSets {
+        androidTest {
+            java.srcDirs += "src/sharedTestData/kotlin"
+        }
+    }
 }
 
 dependencies {

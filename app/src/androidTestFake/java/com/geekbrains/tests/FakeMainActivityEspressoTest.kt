@@ -1,6 +1,7 @@
 package com.geekbrains.tests
 
-import androidx.lifecycle.Lifecycle
+import TEST_FAKE_RESULT
+import TEST_FAKE_SEARCH
 import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
@@ -10,7 +11,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.geekbrains.tests.view.search.MainActivity
-import junit.framework.TestCase
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -29,7 +29,8 @@ class FakeMainActivityEspressoTest {
     @Test
     fun activitySearch_IsDisplayed() {
         onView(withId(R.id.searchEditText)).perform(click())
-        onView(withId(R.id.searchEditText)).perform(replaceText("algol"), closeSoftKeyboard())
+        onView(withId(R.id.searchEditText)).perform(replaceText(TEST_FAKE_SEARCH),
+            closeSoftKeyboard())
         onView(withId(R.id.searchEditText)).perform(pressImeActionButton())
 
         onView(withId(R.id.totalCountTextView)).check(matches(ViewMatchers.isDisplayed()))
@@ -38,9 +39,10 @@ class FakeMainActivityEspressoTest {
     @Test
     fun activitySearch_IsWorking() {
         onView(withId(R.id.searchEditText)).perform(click())
-        onView(withId(R.id.searchEditText)).perform(replaceText("algol"), closeSoftKeyboard())
+        onView(withId(R.id.searchEditText)).perform(replaceText(TEST_FAKE_SEARCH),
+            closeSoftKeyboard())
         onView(withId(R.id.searchEditText)).perform(pressImeActionButton())
-        onView(withId(R.id.totalCountTextView)).check(matches(withText("Number of results: 42")))
+        onView(withId(R.id.totalCountTextView)).check(matches(withText(TEST_FAKE_RESULT)))
     }
 
     @After

@@ -6,12 +6,11 @@ import android.view.inputmethod.EditorInfo
 import android.widget.TextView.OnEditorActionListener
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import com.geekbrains.tests.BuildConfig
 import com.geekbrains.tests.R
 import com.geekbrains.tests.model.SearchResult
 import com.geekbrains.tests.presenter.RepositoryContract
-import com.geekbrains.tests.presenter.search.PresenterSearchContract
-import com.geekbrains.tests.presenter.search.SearchPresenter
 import com.geekbrains.tests.repository.FakeGitHubRepository
 import com.geekbrains.tests.repository.GitHubApi
 import com.geekbrains.tests.repository.GitHubRepository
@@ -20,32 +19,62 @@ import kotlinx.android.synthetic.main.activity_main.*
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.*
-
 class MainActivity : AppCompatActivity(), ViewSearchContract {
 
     private val adapter = SearchResultAdapter()
-    private val presenter: PresenterSearchContract = SearchPresenter(this, createRepository())
+    private val viewModel: SearchViewModel by lazy {
+        ViewModelProvider(this)[SearchViewModel::class.java]
+    }
     private var totalCount: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        presenter.onAttach(this)
         setUI()
+        viewModel.subscribeToLiveData().observe(this) { onStateChange(it) }
+    }
+
+    private fun onStateChange(screenState: ScreenState) {
+        when (screenState) {
+            is ScreenState.Working -> {
+                val searchResponse = screenState.searchResponse
+                val totalCount = searchResponse.totalCount
+                progressBar.visibility = View.GONE
+                with(totalCountTextView) {
+                    visibility = View.VISIBLE
+                    text =
+                        String.format(
+                            Locale.getDefault(),
+                            getString(R.string.results_count),
+                            totalCount
+                        )
+                }
+
+                this.totalCount = totalCount!!
+                adapter.updateResults(searchResponse.searchResults!!)
+            }
+            is ScreenState.Loading -> {
+                progressBar.visibility = View.VISIBLE
+            }
+            is ScreenState.Error -> {
+                progressBar.visibility = View.GONE
+                Toast.makeText(this, screenState.error.message, Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     private fun setUI() {
         toDetailsActivityButton.setOnClickListener {
             startActivity(DetailsActivity.getIntent(this, totalCount))
         }
-        setSearchButtonListener()
+        setOnSearchButtonListener()
         setQueryListener()
         setRecyclerView()
     }
 
-    private fun setSearchButtonListener() {
+    private fun setOnSearchButtonListener() {
         searchButton.setOnClickListener {
-            presenter.searchGitHub(searchButton.text.toString())
+            viewModel.searchGitHub(searchButton.text.toString())
         }
     }
 
@@ -59,7 +88,7 @@ class MainActivity : AppCompatActivity(), ViewSearchContract {
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 val query = searchEditText.text.toString()
                 if (query.isNotBlank()) {
-                    presenter.searchGitHub(query)
+                    viewModel.searchGitHub(query)
                     return@OnEditorActionListener true
                 } else {
                     Toast.makeText(
@@ -91,14 +120,14 @@ class MainActivity : AppCompatActivity(), ViewSearchContract {
 
     override fun displaySearchResults(
         searchResults: List<SearchResult>,
-        totalCount: Int,
+        totalCount: Int
     ) {
         with(totalCountTextView) {
             visibility = View.VISIBLE
             text =
-                String.format(Locale.getDefault(), getString(R.string.results_count),
-                    totalCount)
+                String.format(Locale.getDefault(), getString(R.string.results_count), totalCount)
         }
+
         this.totalCount = totalCount
         adapter.updateResults(searchResults)
     }
@@ -117,11 +146,6 @@ class MainActivity : AppCompatActivity(), ViewSearchContract {
         } else {
             progressBar.visibility = View.GONE
         }
-    }
-
-    override fun onDestroy() {
-        presenter.onDetach()
-        super.onDestroy()
     }
 
     companion object {
